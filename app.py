@@ -45,12 +45,16 @@ st.markdown("""
 
 def fetch_stock_data(ticker, days=120):
     try:
-        from vnstock3 import Vnstock
-        stock = Vnstock().stock(symbol=ticker.upper(), source='TCBS')
-        end_date = datetime.now().strftime('%Y-%m-%d')
-        start_date = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
-        df = stock.quote.history(start=start_date, end=end_date, interval='1D')
+        import yfinance as yf
+        yf_ticker = f"{ticker.upper()}.VN"
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=days)
+        df = yf.download(yf_ticker, start=start_date, 
+                         end=end_date, progress=False)
+        df.columns = [c.lower() for c in df.columns]
         df.index = pd.to_datetime(df.index)
+        if len(df) < 10:
+            raise ValueError("No data returned")
         return df
     except Exception as e:
         st.error(f"Không thể tải dữ liệu cho {ticker}: {e}")
