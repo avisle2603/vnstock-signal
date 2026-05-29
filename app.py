@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import pandas_ta as ta
+import ta
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import requests
@@ -59,18 +59,19 @@ def fetch_stock_data(ticker, days=120):
 
 def compute_indicators(df):
     df = df.copy()
-    df['rsi'] = ta.rsi(df['close'], length=14)
-    macd = ta.macd(df['close'])
-    df['macd'] = macd['MACD_12_26_9']
-    df['macd_signal'] = macd['MACDs_12_26_9']
-    df['macd_hist'] = macd['MACDh_12_26_9']
-    bb = ta.bbands(df['close'], length=20)
-    df['bb_upper'] = bb['BBU_20_2.0']
-    df['bb_lower'] = bb['BBL_20_2.0']
-    df['bb_mid']   = bb['BBM_20_2.0']
-    df['ema20'] = ta.ema(df['close'], length=20)
-    df['ema50'] = ta.ema(df['close'], length=50)
-    df['atr']   = ta.atr(df['high'], df['low'], df['close'], length=14)
+    df['rsi'] = ta.momentum.RSIIndicator(df['close'], window=14).rsi()
+    macd = ta.trend.MACD(df['close'])
+    df['macd'] = macd.macd()
+    df['macd_signal'] = macd.macd_signal()
+    df['macd_hist'] = macd.macd_diff()
+    bb = ta.volatility.BollingerBands(df['close'], window=20)
+    df['bb_upper'] = bb.bollinger_hband()
+    df['bb_lower'] = bb.bollinger_lband()
+    df['bb_mid'] = bb.bollinger_mavg()
+    df['ema20'] = ta.trend.EMAIndicator(df['close'], window=20).ema_indicator()
+    df['ema50'] = ta.trend.EMAIndicator(df['close'], window=50).ema_indicator()
+    df['atr'] = ta.volatility.AverageTrueRange(
+        df['high'], df['low'], df['close'], window=14).average_true_range()
     df['vol_ma20'] = df['volume'].rolling(20).mean()
     return df
 
