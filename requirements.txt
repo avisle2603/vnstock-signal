@@ -1,8 +1,7 @@
 streamlit
 vnstock3
 pandas
-pandas-ta==0.3.14b
 plotly
 requests
-numpy<2.0
+numpy
 ta
