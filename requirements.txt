@@ -1,0 +1,6 @@
+streamlit
+vnstock3
+pandas-ta
+plotly
+requests
+pandas
