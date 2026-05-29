@@ -1,8 +1,7 @@
 streamlit
-vnstock3
 pandas
 plotly
 requests
 numpy
 ta
-ipython
+yfinance
