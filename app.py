@@ -49,9 +49,14 @@ def fetch_stock_data(ticker, days=120):
         yf_ticker = f"{ticker.upper()}.VN"
         end_date = datetime.now()
         start_date = end_date - timedelta(days=days)
-        df = yf.download(yf_ticker, start=start_date, 
-                         end=end_date, progress=False)
-        df.columns = [c.lower() for c in df.columns]
+        df = yf.download(yf_ticker, start=start_date,
+                         end=end_date, progress=False,
+                         auto_adjust=True)
+        # Flatten multi-level columns if present
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = [col[0].lower() for col in df.columns]
+        else:
+            df.columns = [c.lower() for c in df.columns]
         df.index = pd.to_datetime(df.index)
         if len(df) < 10:
             raise ValueError("No data returned")
