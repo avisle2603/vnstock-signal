@@ -46,7 +46,7 @@ st.markdown("""
 def fetch_stock_data(ticker, days=120):
     try:
         from vnstock3 import Vnstock
-        stock = Vnstock().stock(symbol=ticker.upper(), source='VCI')
+        stock = Vnstock().stock(symbol=ticker.upper(), source='TCBS')
         end_date = datetime.now().strftime('%Y-%m-%d')
         start_date = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
         df = stock.quote.history(start=start_date, end=end_date, interval='1D')
